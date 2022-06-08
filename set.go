@@ -68,6 +68,9 @@ func Search(sov interface{}, key string, value interface{}) int {
 	s := InterfaceSlice(sov)
 	for ix, v := range s {
 		vv := GetField(v, key)
+		if reflect.ValueOf(vv).Kind() == reflect.Ptr {
+			vv = reflect.Indirect(reflect.ValueOf(vv)).Interface()
+		}
 		if vv == value {
 			return ix
 		}

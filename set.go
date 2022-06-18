@@ -78,6 +78,30 @@ func Search(sov interface{}, key string, value interface{}) int {
 	return -1
 }
 
+func MultiSearch(pObj interface{}, pFields ...KeyValue) int {
+	if pObj == nil {
+		return -1
+	}
+	s := InterfaceSlice(pObj)
+	for ix, v := range s {
+		matched := true
+		for _, field := range pFields {
+			vv := GetField(v, field.Key)
+			if reflect.ValueOf(vv).Kind() == reflect.Ptr {
+				vv = reflect.Indirect(reflect.ValueOf(vv)).Interface()
+			}
+			if vv != field.Value {
+				matched = false
+			}
+		}
+
+		if matched {
+			return ix
+		}
+	}
+	return -1
+}
+
 func Searchs(sov interface{}, key []string, value interface{}) int {
 	s := InterfaceSlice(sov)
 	for ix, v := range s {

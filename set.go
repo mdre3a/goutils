@@ -3,6 +3,11 @@ package goutils
 import "reflect"
 
 func GetField(v interface{}, field string) interface{} {
+
+	if reflect.ValueOf(v).Kind() == reflect.Ptr {
+		v = reflect.Indirect(reflect.ValueOf(v)).Interface()
+	}
+
 	switch reflect.ValueOf(v).Kind() {
 	case reflect.Map:
 		return InterfaceMap(v)[field]

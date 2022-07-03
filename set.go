@@ -29,6 +29,50 @@ func GetFields(v interface{}, fields []string) interface{} {
 	return GetFields(myV, fields[1:])
 }
 
+func InterfaceSliceReflect(slice reflect.Value) []reflect.Value {
+	if slice.Kind() != reflect.Slice && slice.Kind() != reflect.Array {
+		panic("InterfaceSlice() given a non-slice type")
+	}
+
+	// Keep the distinction between nil and empty slice input
+	//if s.IsNil() {
+	//	return nil
+	//}
+
+	ret := make([]reflect.Value, slice.Len())
+
+	for i := 0; i < slice.Len(); i++ {
+		ret[i] = slice.Index(i)
+		//if slice.Index(i).Kind() != reflect.Pointer {
+		//	ret[i] = slice.Index(i)
+		//} else {
+		//	ret[i] = slice.Index(i)
+		//}
+	}
+
+	return ret
+}
+
+func InterfaceMapReflect(mp reflect.Value) map[string]reflect.Value {
+	s := reflect.ValueOf(mp)
+	if s.Kind() != reflect.Map {
+		panic("InterfaceMap() given a non-slice type")
+	}
+
+	// Keep the distinction between nil and empty slice input
+	if s.IsNil() {
+		return nil
+	}
+
+	ret := make(map[string]reflect.Value)
+	mpRange := s.MapRange()
+	for mpRange.Next() {
+		ret[mpRange.Key().String()] = mpRange.Value()
+	}
+
+	return ret
+}
+
 func InterfaceSlice(slice interface{}) []interface{} {
 	s := reflect.ValueOf(slice)
 	if s.Kind() != reflect.Slice && s.Kind() != reflect.Array {
